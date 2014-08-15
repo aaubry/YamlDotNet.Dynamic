@@ -28,8 +28,26 @@ using Xunit;
 
 namespace YamlDotNet.Dynamic.Test
 {
+	using System.IO;
+	using System.Runtime.Serialization.Formatters.Binary;
+
+	using YamlDotNet.RepresentationModel;
+
 	public class DynamicYamlTest
 	{
+		[Fact]
+		public void TestDynamicYamlIsSerializeable()
+		{
+			dynamic dynamicYaml = new DynamicYaml(MappingYaml);
+			var formatter = new BinaryFormatter();
+			var stream = new MemoryStream();
+			formatter.Serialize(stream, dynamicYaml);
+			
+			stream.Position = 0;
+			dynamic result = formatter.Deserialize(stream);
+			Assert.Equal((YamlNode)dynamicYaml.yamlNode, (YamlNode)result.yamlNode);
+		}
+
 		[Fact]
 		public void TestMappingNode()
 		{

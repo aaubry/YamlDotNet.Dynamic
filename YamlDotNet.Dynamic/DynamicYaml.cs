@@ -31,6 +31,7 @@ using YamlDotNet.RepresentationModel;
 
 namespace YamlDotNet.Dynamic
 {
+	[Serializable]
 	public class DynamicYaml : DynamicObject
 	{
 		private static readonly Type[] ConvertableBasicTypes =
