@@ -28,8 +28,11 @@ using Xunit;
 
 namespace YamlDotNet.Dynamic.Test
 {
+	using System.Dynamic;
 	using System.IO;
 	using System.Runtime.Serialization.Formatters.Binary;
+
+	using Microsoft.CSharp.RuntimeBinder;
 
 	using YamlDotNet.RepresentationModel;
 
@@ -225,6 +228,76 @@ namespace YamlDotNet.Dynamic.Test
 		}
 
 		[Fact]
+		public void TestNullConversionsInt()
+		{
+			dynamic dynamicYaml = new DynamicYaml(NullTestYaml);
+
+			int? object1 = dynamicYaml.field1;
+			object1.Should().Be(null);
+
+			int? object2 = dynamicYaml.field2;
+			object2.Should().Be(null);
+
+			int? object3 = dynamicYaml.field3;
+			object3.Should().Be(null);
+		}
+
+		[Fact]
+		public void TestNullConversionsObject()
+		{
+			dynamic dynamicYaml = new DynamicYaml(NullTestYaml);
+
+			// DLR is not invoked for this call
+			// thus the TryConvert method cannot be called
+			// and this use case is unsupported
+			object object1 = dynamicYaml.field1;
+			object1.Should().NotBeNull();
+			object1.Should().BeOfType<DynamicYaml>();
+		}
+
+		[Fact]
+		public void TestNullConversionsString()
+		{
+			dynamic dynamicYaml = new DynamicYaml(NullTestYaml);
+
+			string object1 = dynamicYaml.field1;
+			object1.Should().Be(null);
+
+			string object2 = dynamicYaml.field2;
+			object2.Should().Be(null);
+
+			string object3 = dynamicYaml.field3;
+			object3.Should().Be(null);
+		}
+
+		[Fact]
+		public void TestNullConversionsEnum()
+		{
+			dynamic dynamicYaml = new DynamicYaml(NullTestYaml);
+
+			StringComparison? object1 = dynamicYaml.field1;
+			object1.Should().Be(null);
+
+			StringComparison? object2 = dynamicYaml.field2;
+			object2.Should().Be(null);
+
+			StringComparison? object3 = dynamicYaml.field3;
+			object3.Should().Be(null);
+		}
+
+		[Fact]
+		public void TestNullConversionsFailForNonNullTypes()
+		{
+			dynamic dynamicYaml = new DynamicYaml(NullTestYaml);
+
+			Assert.Throws<Microsoft.CSharp.RuntimeBinder.RuntimeBinderException>(
+				() =>
+					{
+						int object1 = dynamicYaml.field1;
+					});
+		}
+
+		[Fact]
 		public void TestNamingConventions()
 		{
 			dynamic dynamicYaml = new DynamicYaml(NamingConventionsYaml);
@@ -321,5 +394,11 @@ namespace YamlDotNet.Dynamic.Test
                 man behind the curtain.
 
 ...";
+
+		private const string NullTestYaml = @"---
+            field1: ~
+            field2: null
+            field3: 
+";
 	}
 }
