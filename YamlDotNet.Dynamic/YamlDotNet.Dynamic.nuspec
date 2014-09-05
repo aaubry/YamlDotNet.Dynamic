@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<package>
+	<metadata>
+		<id>YamlDotNet.Dynamic</id>
+		<version>$version$</version>
+		<authors>Antoine Aubry</authors>
+		<description>A .NET library for YAML. YamlDotNet.Dynamic adds support for 'dynamic' to YamlDotNet.</description>
+		<summary>YamlDotNet.Dynamic adds support for 'dynamic' to YamlDotNet.</summary>
+		<language>en-US</language>
+		<licenseUrl>http://www.aaubry.net/yamldotnet/license.aspx</licenseUrl>
+		<projectUrl>http://www.aaubry.net/yamldotnet.aspx</projectUrl>
+		<iconUrl>http://www.aaubry.net/IMAGES%2f2012%2f11%2fyamldotnet.png.jpgx</iconUrl>
+		<tags>yaml parser development library serialization dynamic</tags>
+	</metadata>
+	<files>
+		<file src="bin\Release\YamlDotNet.Dynamic.pdb" target="lib\net40" />
+	</files>
+</package>
