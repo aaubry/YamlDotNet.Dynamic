@@ -226,9 +226,33 @@ namespace YamlDotNet.Dynamic
 			return base.TryGetIndex(binder, indices, out result);
 		}
 
+		/// <summary>
+		/// Determines if a node is null.
+		/// Adapted from <c>YamlDotNet.Serialization.NodeDeserializers.NullNodeDeserializer</c>
+		/// </summary>
+		/// <param name="node"></param>
+		/// <returns></returns>
+		private bool NodeIsNull(YamlScalarNode node)
+		{
+			// http://yaml.org/type/null.html
+
+			if (node.Tag == "tag:yaml.org,2002:null")
+			{
+				return true;
+			}
+
+			if (node == null || node.Style != Core.ScalarStyle.Plain)
+			{
+				return false;
+			}
+
+			var value = node.Value;
+			return value == "" || value == "~" || value == "null" || value == "Null" || value == "NULL";
+		}
+
 		private bool TryConvertToBasicType(Type type, bool isNullable, out object result)
 		{
-			if (type == typeof(object) || type == typeof(DynamicYaml))
+			if (type == typeof(DynamicYaml) || type == typeof(object))
 			{
 				return SuccessfullyGetValue(this, out result);
 			}
@@ -236,6 +260,16 @@ namespace YamlDotNet.Dynamic
 			{
 				return isNullable? SuccessfullyGetValue(null, out result): FailToGetValue(out result);
 			}
+
+			// check if scalar value is a valid YAML null type
+			if (!type.IsValueType || isNullable)
+			{
+				if (NodeIsNull(scalarNode))
+				{
+					return SuccessfullyGetValue(null, out result);
+				}
+			}
+
 			if (type == typeof(string))
 			{
 				return SuccessfullyGetValue(scalarNode.Value, out result);
