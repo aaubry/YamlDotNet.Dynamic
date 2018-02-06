@@ -141,7 +141,7 @@ namespace YamlDotNet.Dynamic
 			}
 
 			// try and get an exact match to the key first
-			if (TryGetValueByYamlKeyAndType(key, type, out result))
+			if (TryGetValueByYamlKeyAndType(new YamlScalarNode(key), type, out result))
 			{
 				return true;
 			}
